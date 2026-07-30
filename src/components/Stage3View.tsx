@@ -4,7 +4,7 @@ import { Edit3, Eraser, RotateCcw, Play, CheckCircle, ArrowRight, Activity, Cloc
 
 interface Props {
   data: Stage1To3Data;
-  onSubmitForGrading: (telemetry: ScratchpadTelemetry, canvasImageBase64: string, typedSolution: string) => void;
+  onSubmitForGrading: (telemetry: ScratchpadTelemetry, canvasImageBase64: string, typedSolution: string, exerciseProblemText: string) => void;
   isSubmitting: boolean;
 }
 
@@ -247,7 +247,7 @@ export const Stage3View: React.FC<Props> = ({ data, onSubmitForGrading, isSubmit
       typedSolution,
     };
 
-    onSubmitForGrading(telemetry, imageBase64, typedSolution);
+    onSubmitForGrading(telemetry, imageBase64, typedSolution, currentExercise.problemText);
   };
 
   return (
