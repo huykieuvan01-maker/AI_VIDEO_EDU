@@ -1,4 +1,4 @@
-export type GradeLevel = 'tiểu_học' | 'thcs' | 'thpt' | 'đại_học';
+export type GradeLevel = 'lop_6' | 'lop_7' | 'lop_8' | 'lop_9';
 export type PedagogicalTone = 'gần_gũi' | 'chuyên_sâu' | 'socratic';
 export type SubjectCategory = 'toán' | 'vật_lý' | 'hóa_học' | 'stem';
 
