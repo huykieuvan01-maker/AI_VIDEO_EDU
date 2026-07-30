@@ -38,12 +38,7 @@ export default function App() {
   useEffect(() => {
     const checkApiKey = () => {
       const savedKey = localStorage.getItem('gemini_api_key') || '';
-      if (!savedKey) {
-        setIsForcedApiKey(true);
-        setIsApiKeyModalOpen(true);
-      } else {
-        setIsForcedApiKey(false);
-      }
+      setIsForcedApiKey(false);
     };
     checkApiKey();
     window.addEventListener('gemini_settings_changed', checkApiKey);
@@ -102,6 +97,12 @@ export default function App() {
       setIsStage2Unlocked(false);
       setIsStage3Unlocked(false);
       setIsStage4Unlocked(false);
+      
+      const isMissingKey = err?.message?.includes('API Key') || err?.message?.includes('API_KEY') || err?.message?.includes('key');
+      if (isMissingKey) {
+        setIsForcedApiKey(false);
+        setIsApiKeyModalOpen(true);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -148,6 +149,13 @@ export default function App() {
       setActiveStage(4);
     } catch (err: any) {
       console.error('Scratchpad evaluation error:', err);
+      
+      const isMissingKey = err?.message?.includes('API Key') || err?.message?.includes('API_KEY') || err?.message?.includes('key');
+      if (isMissingKey && !diagnosticReport) {
+        setIsForcedApiKey(false);
+        setIsApiKeyModalOpen(true);
+      }
+
       // Fallback to current preset or show error
       if (diagnosticReport) {
         setIsStage4Unlocked(true);
