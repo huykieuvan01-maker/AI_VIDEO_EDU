@@ -111,7 +111,8 @@ export default function App() {
   const handleSubmitScratchpad = async (
     telemetry: ScratchpadTelemetry,
     scratchpadImageBase64: string,
-    typedSolution: string
+    typedSolution: string,
+    exerciseProblemText: string
   ) => {
     setIsSubmittingScratchpad(true);
     setErrorMessage(null);
@@ -129,7 +130,7 @@ export default function App() {
           'x-gemini-model': savedModel
         },
         body: JSON.stringify({
-          problemText: stage1To3Data?.ocrData || 'Bài toán',
+          problemText: exerciseProblemText || stage1To3Data?.ocrData || 'Bài toán',
           scratchpadImageBase64,
           typedSolution,
           telemetry,
