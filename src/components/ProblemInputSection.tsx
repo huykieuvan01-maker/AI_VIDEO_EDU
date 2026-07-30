@@ -97,13 +97,9 @@ export const ProblemInputSection: React.FC<Props> = ({ onAnalyze, isLoading }) =
     e.preventDefault();
     if (!problemText && !imageBase64) return;
 
-    const normalizeText = (text: string) => text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
-
     // Check if matching current preset
     const matchedSample = SAMPLE_PROBLEMS.find((s) => s.id === selectedSampleId);
-    const isPresetMatch = matchedSample && 
-      normalizeText(problemText) === normalizeText(matchedSample.input.problemText) && 
-      !imageBase64;
+    const isPresetMatch = !!selectedSampleId && !imageBase64;
 
     if (isPresetMatch && matchedSample) {
       onAnalyze(matchedSample.input, matchedSample.presetData, matchedSample.presetReport);
