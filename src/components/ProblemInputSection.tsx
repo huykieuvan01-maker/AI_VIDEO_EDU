@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { ProblemInput, GradeLevel, PedagogicalTone, SubjectCategory, Stage1To3Data, DiagnosticReport } from '../types';
 import { SAMPLE_PROBLEMS, SampleProblemItem } from '../data/sampleProblems';
 import { Sparkles, Upload, FileText, Image as ImageIcon, Send, RefreshCw, Layers, GraduationCap, Volume2, BookOpen } from 'lucide-react';
@@ -16,6 +16,55 @@ export const ProblemInputSection: React.FC<Props> = ({ onAnalyze, isLoading }) =
   const [tone, setTone] = useState<PedagogicalTone>('chuyên_sâu');
   const [subject, setSubject] = useState<SubjectCategory>('toán');
   const [selectedSampleId, setSelectedSampleId] = useState<string>(SAMPLE_PROBLEMS[0].id);
+
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const mathSymbols = [
+    { label: '+', value: '+' },
+    { label: '-', value: '-' },
+    { label: '×', value: ' × ' },
+    { label: '÷', value: ' ÷ ' },
+    { label: '=', value: ' = ' },
+    { label: '≠', value: ' ≠ ' },
+    { label: '≈', value: ' ≈ ' },
+    { label: 'x²', value: '²' },
+    { label: 'x³', value: '³' },
+    { label: 'xⁿ', value: '^' },
+    { label: '√x', value: '√(' },
+    { label: '≤', value: ' ≤ ' },
+    { label: '≥', value: ' ≥ ' },
+    { label: '±', value: ' ± ' },
+    { label: 'π', value: 'π' },
+    { label: 'Δ', value: 'Δ' },
+    { label: 'α', value: 'α' },
+    { label: 'β', value: 'β' },
+    { label: 'a/b', value: 'a/b' },
+    { label: '( )', value: '()' },
+    { label: 'x', value: 'x' },
+    { label: 'y', value: 'y' }
+  ];
+
+  const insertSymbol = (symbol: string) => {
+    const textarea = textareaRef.current;
+    if (!textarea) {
+      setProblemText(prev => prev + symbol);
+      return;
+    }
+
+    const startPos = textarea.selectionStart;
+    const endPos = textarea.selectionEnd;
+    const text = textarea.value;
+
+    const newText = text.substring(0, startPos) + symbol + text.substring(endPos);
+    setProblemText(newText);
+    setSelectedSampleId('');
+
+    setTimeout(() => {
+      textarea.focus();
+      const newCursorPos = startPos + symbol.length;
+      textarea.setSelectionRange(newCursorPos, newCursorPos);
+    }, 0);
+  };
 
   const handleSelectSample = (sample: SampleProblemItem) => {
     setSelectedSampleId(sample.id);
@@ -120,11 +169,32 @@ export const ProblemInputSection: React.FC<Props> = ({ onAnalyze, isLoading }) =
         {/* Main Text / Image Input */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="md:col-span-2 space-y-2">
-            <label className="block text-xs font-medium text-slate-300 flex items-center gap-1.5">
-              <FileText className="w-4 h-4 text-indigo-400" />
-              Nội dung bài toán hoặc yêu cầu (Math / Physics / Chemistry / STEM):
-            </label>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <label className="block text-xs font-medium text-slate-300 flex items-center gap-1.5">
+                <FileText className="w-4 h-4 text-indigo-400" />
+                Nội dung bài toán hoặc yêu cầu (Math / Physics / Chemistry / STEM):
+              </label>
+            </div>
+            
+            {/* Math Formula Keyboard Helper Toolbar */}
+            <div className="flex flex-wrap gap-1 p-2 bg-slate-950/60 border border-slate-800 rounded-xl">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider self-center mr-1">Gõ nhanh công thức:</span>
+              <div className="flex flex-wrap gap-1">
+                {mathSymbols.map((sym, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => insertSymbol(sym.value)}
+                    className="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-[11px] font-bold rounded-lg transition-all active:scale-95 hover:border-indigo-500"
+                  >
+                    {sym.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <textarea
+              ref={textareaRef}
               rows={4}
               value={problemText}
               onChange={(e) => {
