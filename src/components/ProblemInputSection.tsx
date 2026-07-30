@@ -12,7 +12,7 @@ export const ProblemInputSection: React.FC<Props> = ({ onAnalyze, isLoading }) =
   const [problemText, setProblemText] = useState<string>(SAMPLE_PROBLEMS[0].input.problemText);
   const [imageBase64, setImageBase64] = useState<string | undefined>(undefined);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [gradeLevel, setGradeLevel] = useState<GradeLevel>('thpt');
+  const [gradeLevel, setGradeLevel] = useState<GradeLevel>('lop_6');
   const [tone, setTone] = useState<PedagogicalTone>('chuyên_sâu');
   const [subject, setSubject] = useState<SubjectCategory>('toán');
   const [selectedSampleId, setSelectedSampleId] = useState<string>(SAMPLE_PROBLEMS[0].id);
@@ -130,7 +130,7 @@ export const ProblemInputSection: React.FC<Props> = ({ onAnalyze, isLoading }) =
           <GraduationCap className="w-4 h-4 text-indigo-400 hidden md:inline" />
           <span className="text-xs text-slate-400 font-medium">Trình độ:</span>
           <span className="text-xs font-bold text-indigo-300 px-2.5 py-1 rounded-lg bg-indigo-500/20 border border-indigo-500/30">
-            {gradeLevel === 'tiểu_học' ? 'Tiểu Học' : gradeLevel === 'thcs' ? 'THCS' : gradeLevel === 'thpt' ? 'THPT' : 'Đại Học'}
+            {gradeLevel === 'lop_6' ? 'Lớp 6' : gradeLevel === 'lop_7' ? 'Lớp 7' : gradeLevel === 'lop_8' ? 'Lớp 8' : 'Lớp 9'}
           </span>
         </div>
       </div>
@@ -251,10 +251,10 @@ export const ProblemInputSection: React.FC<Props> = ({ onAnalyze, isLoading }) =
               onChange={(e) => setGradeLevel(e.target.value as GradeLevel)}
               className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
             >
-              <option value="tiểu_học">Tiểu Học (Lớp 1 - 5)</option>
-              <option value="thcs">THCS (Lớp 6 - 9)</option>
-              <option value="thpt">THPT (Lớp 10 - 12)</option>
-              <option value="đại_học">Đại Học / Chuyên Sâu</option>
+              <option value="lop_6">Toán Lớp 6</option>
+              <option value="lop_7">Toán Lớp 7</option>
+              <option value="lop_8">Toán Lớp 8</option>
+              <option value="lop_9">Toán Lớp 9</option>
             </select>
           </div>
 
