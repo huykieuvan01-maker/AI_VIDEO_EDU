@@ -58,6 +58,12 @@ async function generateContentWithFallback(
     } catch (err: any) {
       console.warn(`[AI Server] Model ${modelName} failed:`, err?.message || err);
       lastError = err;
+
+      // If the error is a quota or rate limit error, throw it immediately!
+      const errMsg = (err?.message || '').toLowerCase();
+      if (errMsg.includes('quota') || errMsg.includes('limit') || errMsg.includes('exhausted') || err?.status === 429 || errMsg.includes('429')) {
+        throw err;
+      }
     }
   }
 
