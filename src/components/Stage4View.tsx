@@ -13,11 +13,12 @@ interface Props {
 }
 
 export const Stage4View: React.FC<Props> = ({ report, data, telemetry = null, onResetAll }) => {
-  const [quickFixAnswer, setQuickFixAnswer] = useState<number | null>(null);
-  const [quickFixSubmitted, setQuickFixSubmitted] = useState<boolean>(false);
+  const questionsList = report.remedialRoadmap?.quickFixQuestions || 
+    (report.remedialRoadmap?.quickFixQuestion ? [report.remedialRoadmap.quickFixQuestion] : []);
 
-  const quickFix = report.remedialRoadmap?.quickFixQuestion;
-  const isQuickFixCorrect = quickFix && quickFixAnswer === quickFix.correctAnswerIndex;
+  const [activeQuestionIndex, setActiveQuestionIndex] = useState<number>(0);
+  const [answers, setAnswers] = useState<Record<number, number | null>>({});
+  const [submittedAnswers, setSubmittedAnswers] = useState<Record<number, boolean>>({});
 
   return (
     <div className="space-y-6">
@@ -295,71 +296,143 @@ export const Stage4View: React.FC<Props> = ({ report, data, telemetry = null, on
           </p>
         </div>
 
-        {/* Interactive Quick Fix Validation Question */}
-        {quickFix && (
+        {/* Interactive Quick Fix Validation Questions - 5 similar exercises */}
+        {questionsList.length > 0 && (
           <div className="p-4 bg-slate-950 border border-emerald-500/30 rounded-xl space-y-3">
             <span className="text-xs font-bold text-amber-700 uppercase tracking-wider block">
-              2. Bài kiểm tra xác nhận sửa lỗi tức thì (Quick Fix):
+              2. Bài kiểm tra xác nhận sửa lỗi (Luyện tập 5 bài tập tương tự):
             </span>
-            <p className="text-xs font-semibold text-slate-100">{quickFix.question}</p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {quickFix.options?.map((opt, i) => {
-                const isSelected = quickFixAnswer === i;
-                let btnStyle = 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-850';
+            {/* Questions Tab Navigation */}
+            <div className="flex gap-1.5 overflow-x-auto pb-1.5 scrollbar-thin scrollbar-thumb-slate-800">
+              {questionsList.map((q, idx) => {
+                const isCurrent = activeQuestionIndex === idx;
+                const isSubmitted = submittedAnswers[idx];
+                const selectedOption = answers[idx];
+                const isAnsCorrect = selectedOption === q.correctAnswerIndex;
 
-                if (quickFixSubmitted) {
-                  if (i === quickFix.correctAnswerIndex) {
-                    btnStyle = 'bg-emerald-50 border-emerald-500 text-emerald-900 font-bold';
-                  } else if (isSelected) {
-                    btnStyle = 'bg-rose-50 border-rose-500 text-rose-900';
-                  }
-                } else if (isSelected) {
-                  btnStyle = 'bg-amber-50 border-amber-500 text-amber-900 font-semibold';
+                let indicatorStyle = 'bg-slate-900 border-slate-850 text-slate-400 hover:bg-slate-800 hover:text-white';
+                if (isCurrent) {
+                  indicatorStyle = 'bg-amber-950 text-amber-300 border-amber-500/80 font-bold ring-1 ring-amber-500/20';
+                } else if (isSubmitted) {
+                  indicatorStyle = isAnsCorrect 
+                    ? 'bg-emerald-950/70 border-emerald-800 text-emerald-300 font-bold'
+                    : 'bg-rose-950/70 border-rose-800 text-rose-300 font-bold';
                 }
 
                 return (
                   <button
-                    key={i}
-                    onClick={() => {
-                      setQuickFixAnswer(i);
-                      setQuickFixSubmitted(false);
-                    }}
-                    className={`p-3 rounded-xl border text-left text-xs transition-all ${btnStyle}`}
+                    key={idx}
+                    type="button"
+                    onClick={() => setActiveQuestionIndex(idx)}
+                    className={`px-3 py-1.5 rounded-lg border text-xs transition-all flex items-center gap-1.5 shrink-0 ${indicatorStyle}`}
                   >
-                    {opt}
+                    <span>Bài {idx + 1}</span>
+                    {isSubmitted && (
+                      isAnsCorrect 
+                        ? <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        : <XCircle className="w-3.5 h-3.5 text-rose-400" />
+                    )}
                   </button>
                 );
               })}
             </div>
 
-            {!quickFixSubmitted && (
-              <button
-                type="button"
-                disabled={quickFixAnswer === null}
-                onClick={() => setQuickFixSubmitted(true)}
-                className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg transition-all disabled:opacity-50"
-              >
-                Xác Nhận Quick Fix
-              </button>
-            )}
+            {/* Active Question Render */}
+            {questionsList[activeQuestionIndex] && (
+              <div className="space-y-4 pt-2 border-t border-slate-900 animate-fadeIn">
+                <p className="text-xs font-semibold text-slate-100">
+                  {questionsList[activeQuestionIndex].question}
+                </p>
 
-            {quickFixSubmitted && (
-              <div className={`p-3 rounded-xl border text-xs space-y-1 ${isQuickFixCorrect ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-rose-50 border-rose-200 text-rose-900'}`}>
-                <div className="font-bold flex items-center gap-1.5">
-                  {isQuickFixCorrect ? (
-                    <>
-                      <Check className="w-4 h-4 text-emerald-400" />
-                      <span>Chúc mừng! Bạn đã khắc phục hoàn toàn lỗi sai!</span>
-                    </>
-                  ) : (
-                    <>
-                      <XCircle className="w-4 h-4 text-rose-400" />
-                      <span>Chưa chính xác. Hãy đọc lại gợi ý ở Bước 1.</span>
-                    </>
-                  )}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {questionsList[activeQuestionIndex].options?.map((opt, i) => {
+                    const isSelected = answers[activeQuestionIndex] === i;
+                    const isSubmitted = submittedAnswers[activeQuestionIndex];
+                    const isCorrect = i === questionsList[activeQuestionIndex].correctAnswerIndex;
+
+                    let btnStyle = 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-850';
+
+                    if (isSubmitted) {
+                      if (isCorrect) {
+                        btnStyle = 'bg-emerald-50 border-emerald-500 text-emerald-900 font-bold';
+                      } else if (isSelected) {
+                        btnStyle = 'bg-rose-50 border-rose-500 text-rose-900';
+                      }
+                    } else if (isSelected) {
+                      btnStyle = 'bg-amber-50 border-amber-500 text-amber-900 font-semibold';
+                    }
+
+                    return (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => {
+                          if (isSubmitted) return;
+                          setAnswers(prev => ({ ...prev, [activeQuestionIndex]: i }));
+                        }}
+                        className={`p-3 rounded-xl border text-left text-xs transition-all ${btnStyle}`}
+                      >
+                        {opt}
+                      </button>
+                    );
+                  })}
                 </div>
-                <p className="text-[11px] opacity-90">{quickFix.explanation}</p>
+
+                {!submittedAnswers[activeQuestionIndex] ? (
+                  <button
+                    type="button"
+                    disabled={answers[activeQuestionIndex] === null || answers[activeQuestionIndex] === undefined}
+                    onClick={() => setSubmittedAnswers(prev => ({ ...prev, [activeQuestionIndex]: true }))}
+                    className="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg transition-all disabled:opacity-50"
+                  >
+                    Xác Nhận Bài {activeQuestionIndex + 1}
+                  </button>
+                ) : (
+                  <div className={`p-3 rounded-xl border text-xs space-y-1 ${
+                    answers[activeQuestionIndex] === questionsList[activeQuestionIndex].correctAnswerIndex 
+                      ? 'bg-emerald-50 border-emerald-200 text-emerald-900' 
+                      : 'bg-rose-50 border-rose-200 text-rose-900'
+                  }`}>
+                    <div className="font-bold flex items-center gap-1.5">
+                      {answers[activeQuestionIndex] === questionsList[activeQuestionIndex].correctAnswerIndex ? (
+                        <>
+                          <Check className="w-4 h-4 text-emerald-400" />
+                          <span>Chính xác! Bạn đã hoàn thành đúng bài tập này.</span>
+                        </>
+                      ) : (
+                        <>
+                          <XCircle className="w-4 h-4 text-rose-450" />
+                          <span>Chưa chính xác. Hãy phân tích lại bài toán nhé.</span>
+                        </>
+                      )}
+                    </div>
+                    <p className="text-[11px] opacity-90">{questionsList[activeQuestionIndex].explanation}</p>
+                  </div>
+                )}
+
+                {/* Footer simple navigation */}
+                <div className="flex justify-between items-center border-t border-slate-900 pt-3 text-[11px]">
+                  <button
+                    type="button"
+                    disabled={activeQuestionIndex === 0}
+                    onClick={() => setActiveQuestionIndex(prev => prev - 1)}
+                    className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:opacity-30 rounded-lg font-bold transition-all"
+                  >
+                    Bài trước
+                  </button>
+                  <span className="text-[10px] text-slate-500 font-mono">
+                    Bài {activeQuestionIndex + 1} / {questionsList.length}
+                  </span>
+                  <button
+                    type="button"
+                    disabled={activeQuestionIndex === questionsList.length - 1}
+                    onClick={() => setActiveQuestionIndex(prev => prev + 1)}
+                    className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:opacity-30 rounded-lg font-bold transition-all"
+                  >
+                    Bài tiếp theo
+                  </button>
+                </div>
               </div>
             )}
           </div>
