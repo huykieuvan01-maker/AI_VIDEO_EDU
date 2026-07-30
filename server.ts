@@ -247,7 +247,7 @@ Dữ liệu Stroke-by-stroke từ Bảng nháp Thông minh:
 
 Nhiệm vụ của bạn:
 1. Chấm điểm tiến trình (Process Score / 100) dựa trên tư duy logic, mức độ chính xác và độ ngập ngừng.
-2. Tạo Error Heatmap phân loại theo các vùng:
+2. Tạo Error Heatmap phân tích chi tiết từng phép tính hoặc bước toán học trung gian của học sinh (tối thiểu 2-3 bước). Với mỗi bước, phải ghi rõ tên bước tính cụ thể, nhận xét chi tiết từng phép toán học sinh làm đúng hay sai ở điểm nào, tuyệt đối không đưa ra nhận xét chung chung hoặc gộp toàn bộ bài giải thành một bước nhận xét duy nhất. Phân loại theo các vùng:
    - "green" (Tư duy tốt, chính xác)
    - "yellow" (Lỗi sai số, nhầm phép tính nhỏ, ngập ngừng tẩy xóa)
    - "red" (Lỗi sai logic nền tảng, sai bản chất)
