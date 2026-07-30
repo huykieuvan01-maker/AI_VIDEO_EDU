@@ -94,6 +94,13 @@ export interface HeatmapStep {
   correctLogic: string;
 }
 
+export interface QuickFixQuestion {
+  question: string;
+  options: string[];
+  correctAnswerIndex: number;
+  explanation: string;
+}
+
 export interface DiagnosticReport {
   // Part 4
   processScore: number;
@@ -112,11 +119,7 @@ export interface DiagnosticReport {
   remedialRoadmap: {
     recapConceptName: string;
     recapSummary: string;
-    quickFixQuestion: {
-      question: string;
-      options: string[];
-      correctAnswerIndex: number;
-      explanation: string;
-    };
+    quickFixQuestion?: QuickFixQuestion;
+    quickFixQuestions?: QuickFixQuestion[];
   };
 }
