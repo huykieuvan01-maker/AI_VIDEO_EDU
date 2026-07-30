@@ -28,11 +28,11 @@ function getAIClient(userKey?: string) {
 
 // Fallback models to try in case of errors
 const MODEL_FALLBACK_LIST = [
-  'gemini-3-flash-preview',
-  'gemini-3-pro-preview',
   'gemini-2.5-flash',
   'gemini-2.5-pro',
-  'gemini-2.0-flash'
+  'gemini-2.0-flash',
+  'gemini-1.5-flash',
+  'gemini-1.5-pro'
 ];
 
 // Helper to generate content with fallback list
