@@ -3,7 +3,7 @@ import { Stage1To3Data } from '../types';
 import { 
   Play, Pause, RotateCcw, Volume2, VolumeX, ShieldAlert, CheckCircle2, Lock, 
   ArrowRight, Sparkles, MessageSquare, MonitorPlay, HelpCircle, Presentation,
-  BookOpen, List
+  BookOpen, List, Cpu
 } from 'lucide-react';
 import { exportToPPTX, isExportAvailable } from '../utils/exportServices';
 
@@ -13,6 +13,119 @@ interface Props {
   isStage3Unlocked: boolean;
   setIsStage3Unlocked: (unlocked: boolean) => void;
 }
+
+// Simulated SVG-based Animated Robot Teacher
+const RobotTeacher: React.FC<{ isSpeaking: boolean; tab: 'lecture' | 'quiz' | 'practice'; currentStep: number }> = ({ isSpeaking, tab, currentStep }) => {
+  return (
+    <div className="flex flex-col items-center justify-center p-3 bg-black/40 border border-white/10 rounded-2xl shadow-xl w-full max-w-[130px] mx-auto text-center space-y-2 animate-fadeIn shrink-0">
+      <div className="relative">
+        <svg className="w-16 h-16 md:w-20 md:h-20 mx-auto" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Antenna */}
+          <rect x="47" y="10" width="6" height="15" fill="#a1a1aa" />
+          <circle cx="50" cy="8" r="6" fill={isSpeaking ? '#22d3ee' : '#71717a'} className={isSpeaking ? 'animate-pulse' : ''} />
+          
+          {/* Ears */}
+          <rect x="18" y="40" width="8" height="20" rx="3" fill="#71717a" />
+          <rect x="74" y="40" width="8" height="20" rx="3" fill="#71717a" />
+          
+          {/* Head base */}
+          <rect x="24" y="25" width="52" height="50" rx="12" fill="#3f3f46" stroke="#52525b" strokeWidth="3" />
+          
+          {/* Screen / Face */}
+          <rect x="30" y="33" width="40" height="28" rx="6" fill="#18181b" stroke="#3f3f46" strokeWidth="2" />
+          
+          {/* Eyes (Led cyan) */}
+          <circle cx="42" cy="45" r="4" fill="#22d3ee" className={isSpeaking ? 'animate-bounce' : ''} />
+          <circle cx="58" cy="45" r="4" fill="#22d3ee" className={isSpeaking ? 'animate-bounce' : ''} />
+          
+          {/* Mouth / LED Wave */}
+          {isSpeaking ? (
+            <path d="M 38 54 Q 44 58 50 54 T 62 54" stroke="#22d3ee" strokeWidth="2.5" strokeLinecap="round" fill="none" className="animate-pulse" />
+          ) : (
+            <line x1="38" y1="54" x2="62" y2="54" stroke="#a1a1aa" strokeWidth="2" strokeLinecap="round" />
+          )}
+          
+          {/* Body neck */}
+          <rect x="44" y="75" width="12" height="10" fill="#27272a" />
+          {/* Collar */}
+          <path d="M 35 85 L 65 85 L 50 95 Z" fill="#52525b" />
+        </svg>
+      </div>
+      <div className="space-y-0.5">
+        <span className="text-[10px] font-bold text-cyan-300 block font-mono">ROBOT AI TEACHER</span>
+        <span className={`text-[8px] px-1.5 py-0.5 rounded font-mono ${isSpeaking ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-zinc-800 text-zinc-400'}`}>
+          {isSpeaking ? 'ĐANG GIẢNG' : 'TẠM DỪNG'}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+// Hand-drawn Chalk Illustration Sketches
+const ChalkSketch: React.FC<{ type: 'house' | 'calculator' | 'chart' | 'award' }> = ({ type }) => {
+  if (type === 'house') {
+    return (
+      <svg className="w-16 h-16 md:w-24 md:h-24 opacity-90 text-cyan-300 drop-shadow-[0_0_4px_rgba(34,211,238,0.5)]" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="3 3">
+        {/* Roof */}
+        <path d="M 15 50 L 50 15 L 85 50" />
+        {/* Walls */}
+        <path d="M 23 48 L 23 85 L 77 85 L 77 48" />
+        {/* Door */}
+        <path d="M 43 85 L 43 62 L 57 62 L 57 85" />
+        {/* Windows */}
+        <rect x="30" y="38" width="10" height="10" />
+        <rect x="60" y="38" width="10" height="10" />
+        {/* Chimney */}
+        <path d="M 68 31 L 68 22 L 74 22 L 74 38" />
+        {/* Smoke */}
+        <path d="M 76 18 Q 78 12 84 16" />
+      </svg>
+    );
+  }
+  
+  if (type === 'calculator') {
+    return (
+      <svg className="w-16 h-16 md:w-24 md:h-24 opacity-90 text-amber-200 drop-shadow-[0_0_4px_rgba(251,191,36,0.5)]" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="3 3">
+        <rect x="25" y="15" width="50" height="70" rx="8" />
+        <rect x="32" y="23" width="36" height="16" rx="3" />
+        <line x1="36" y1="31" x2="64" y2="31" strokeWidth="3" />
+        <circle cx="37" cy="48" r="4" />
+        <circle cx="50" cy="48" r="4" />
+        <circle cx="63" cy="48" r="4" />
+        <circle cx="37" cy="60" r="4" />
+        <circle cx="50" cy="60" r="4" />
+        <circle cx="63" cy="60" r="4" />
+        <circle cx="37" cy="72" r="4" />
+        <circle cx="50" cy="72" r="4" />
+        <circle cx="63" cy="72" r="4" />
+      </svg>
+    );
+  }
+  
+  if (type === 'chart') {
+    return (
+      <svg className="w-16 h-16 md:w-24 md:h-24 opacity-90 text-emerald-300 drop-shadow-[0_0_4px_rgba(52,211,153,0.5)]" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="3 3">
+        <line x1="15" y1="85" x2="85" y2="85" />
+        <line x1="15" y1="15" x2="15" y2="85" />
+        <rect x="23" y="55" width="10" height="30" />
+        <rect x="38" y="35" width="10" height="50" />
+        <rect x="53" y="45" width="10" height="40" />
+        <rect x="68" y="20" width="10" height="65" />
+        <path d="M 28 50 L 43 30 L 58 40 L 73 15" strokeWidth="3" strokeDasharray="none" />
+      </svg>
+    );
+  }
+  
+  return (
+    <svg className="w-16 h-16 md:w-24 md:h-24 opacity-90 text-yellow-300 drop-shadow-[0_0_4px_rgba(253,224,71,0.5)]" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="3 3">
+      <path d="M 30 20 L 70 20 L 70 45 C 70 58 58 70 50 70 C 42 70 30 58 30 45 Z" />
+      <path d="M 30 28 C 22 28 22 40 30 40" />
+      <path d="M 70 28 C 78 28 78 40 70 40" />
+      <line x1="50" y1="70" x2="50" y2="82" strokeWidth="4" />
+      <path d="M 35 82 L 65 82 L 60 90 L 40 90 Z" />
+    </svg>
+  );
+};
 
 export const Stage2View: React.FC<Props> = ({
   data,
@@ -218,7 +331,7 @@ export const Stage2View: React.FC<Props> = ({
         <div className="xl:col-span-1 space-y-4">
           <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm space-y-4">
             <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-              <List className="w-4 h-4 text-cyan-655" />
+              <List className="w-4 h-4 text-cyan-600" />
               <span>Nội Dung Bài Học</span>
             </h3>
             
@@ -386,195 +499,231 @@ export const Stage2View: React.FC<Props> = ({
 
             {/* Blackboard Screen Container with Wooden Frame */}
             <div className="p-4 bg-zinc-950">
-              <div className="border-[12px] border-amber-900 bg-[#162e26] rounded-2xl shadow-inner relative overflow-hidden min-h-[360px] md:min-h-[420px] p-6 flex flex-col justify-between chalkboard-grid">
+              <div className="border-[12px] border-amber-900 bg-[#162e26] rounded-2xl shadow-inner relative overflow-hidden min-h-[380px] md:min-h-[440px] p-6 flex flex-col justify-between chalkboard-grid">
                 
-                {/* Chalkboard content based on mode */}
-                {activeTab === 'lecture' && (
-                  <div className="space-y-4 flex-1">
-                    <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                      <span className="text-xs uppercase tracking-wider font-extrabold text-amber-200/90 font-mono">
-                        ✏️ {logicSteps[currentTurnIndex]?.title || 'Phân tích & Thuyết minh'}
-                      </span>
-                      <span className="text-[10px] text-white/40 font-mono">
-                        Mốc: {currentTurn?.timeSeconds || 0}s
-                      </span>
-                    </div>
-
-                    <div className="space-y-3">
-                      {/* Key formula display in chalk outline */}
-                      {logicSteps[currentTurnIndex]?.keyFormula && (
-                        <div className="p-4 bg-black/20 border border-dashed border-white/15 rounded-xl text-center space-y-1 animate-fadeIn">
-                          <span className="text-[10px] uppercase font-bold text-cyan-300/80 font-mono block">Công thức cốt lõi:</span>
-                          <span className="text-2xl md:text-3xl font-extrabold text-amber-200/90 font-mono tracking-wide block">
-                            {logicSteps[currentTurnIndex].keyFormula}
+                {/* Chalkboard content layout with robot split */}
+                <div className="flex flex-1 gap-6 items-stretch">
+                  
+                  {/* Left Side: Math Content & Exercises */}
+                  <div className="flex-1 flex flex-col justify-between space-y-4">
+                    {activeTab === 'lecture' && (
+                      <div className="space-y-4 flex-1">
+                        <div className="flex items-center justify-between border-b border-white/20 pb-2">
+                          <span className="text-xs md:text-sm uppercase tracking-wider font-extrabold text-yellow-300 font-mono">
+                            ✏️ {logicSteps[currentTurnIndex]?.title || 'Phân tích & Thuyết minh'}
+                          </span>
+                          <span className="text-[10px] text-zinc-300 font-mono">
+                            Mốc: {currentTurn?.timeSeconds || 0}s
                           </span>
                         </div>
-                      )}
 
-                      {/* Main Math Step Explanation */}
-                      <p className="text-sm md:text-base font-semibold text-slate-100/95 leading-relaxed font-sans">
-                        {logicSteps[currentTurnIndex]?.content}
-                      </p>
-
-                      {/* visual graphic notes in typewriter effect */}
-                      <div className="p-3 bg-white/5 border-l-4 border-cyan-400/80 rounded-r-lg space-y-1">
-                        <span className="text-[9px] uppercase font-bold text-cyan-300/80 font-mono block">Đồ họa mô tả:</span>
-                        <p className="text-xs md:text-sm text-slate-200/90 italic font-mono leading-normal">
-                          {displayedGraphicNote}
-                          <span className="inline-block w-1.5 h-3 bg-cyan-400 ml-0.5 animate-pulse" />
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === 'quiz' && (
-                  <div className="space-y-4 flex-1 flex flex-col justify-between animate-fadeIn">
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                        <span className="text-xs uppercase tracking-wider font-extrabold text-amber-200/90 font-mono">
-                          ❓ CÂU HỎI CHỐT CHẶN (POP-UP QUIZ)
-                        </span>
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${isStage3Unlocked ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'}`}>
-                          {isStage3Unlocked ? 'Đã Thông Qua' : 'Chưa Khóa'}
-                        </span>
-                      </div>
-                      
-                      <p className="text-sm md:text-base font-bold text-slate-100/95 leading-relaxed">
-                        {data.popupQuiz.question}
-                      </p>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
-                        {data.popupQuiz.options?.map((option, idx) => {
-                          const isSelected = selectedOption === idx;
-                          let btnStyle = 'border-white/15 text-slate-200 hover:border-amber-400 hover:bg-white/5';
-                          
-                          if (quizSubmitted) {
-                            if (idx === data.popupQuiz.correctAnswerIndex) {
-                              btnStyle = 'bg-emerald-950/60 border-emerald-500 text-emerald-200 font-bold';
-                            } else if (isSelected) {
-                              btnStyle = 'bg-rose-950/60 border-rose-500 text-rose-200';
-                            }
-                          } else if (isSelected) {
-                            btnStyle = 'bg-indigo-950/70 border-indigo-400 text-indigo-200 font-bold ring-1 ring-indigo-400/50';
-                          }
-
-                          return (
-                            <button
-                              key={idx}
-                              type="button"
-                              disabled={quizSubmitted && isCorrect}
-                              onClick={() => {
-                                setSelectedOption(idx);
-                                setQuizSubmitted(false);
-                              }}
-                              className={`p-3 rounded-xl border text-left text-xs transition-all duration-150 flex items-center justify-between ${btnStyle}`}
-                            >
-                              <span>{option}</span>
-                              {quizSubmitted && idx === data.popupQuiz.correctAnswerIndex && (
-                                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 ml-2" />
-                              )}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    <div className="pt-2">
-                      {!quizSubmitted ? (
-                        <button
-                          type="button"
-                          disabled={selectedOption === null}
-                          onClick={handleQuizSubmit}
-                          className="w-full py-2.5 bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold text-xs rounded-xl shadow-lg transition-all disabled:opacity-50"
-                        >
-                          Xác Nhận Đáp Án
-                        </button>
-                      ) : (
-                        <div className={`p-3 rounded-xl border text-xs space-y-1.5 ${isCorrect ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-200' : 'bg-rose-950/60 border-rose-500/50 text-rose-200'}`}>
-                          <div className="font-bold flex items-center gap-1.5">
-                            {isCorrect ? (
-                              <>
-                                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                                <span>Chính xác! Giai đoạn 3 (Bảng nháp) đã mở khóa.</span>
-                              </>
-                            ) : (
-                              <>
-                                <ShieldAlert className="w-4 h-4 text-rose-400" />
-                                <span>Chưa đúng rồi. Bạn hãy suy nghĩ và chọn lại nhé!</span>
-                              </>
+                        {/* Split layout: text left, chalk sketch right */}
+                        <div className="flex flex-col md:flex-row gap-4 items-start justify-between">
+                          <div className="flex-1 space-y-3">
+                            {/* Key formula display in chalk outline */}
+                            {logicSteps[currentTurnIndex]?.keyFormula && (
+                              <div className="p-4 bg-black/40 border border-dashed border-white/30 rounded-xl text-center space-y-1 animate-fadeIn">
+                                <span className="text-[10px] uppercase font-bold text-cyan-300 font-mono block">Công thức cốt lõi:</span>
+                                <span className="text-2xl md:text-3xl font-extrabold text-yellow-200 font-mono tracking-wide block filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                                  {logicSteps[currentTurnIndex].keyFormula}
+                                </span>
+                              </div>
                             )}
-                          </div>
-                          <p className="text-[11px] opacity-90 leading-relaxed font-mono">
-                            {data.popupQuiz.explanation}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
 
-                {activeTab === 'practice' && (
-                  <div className="space-y-4 flex-1 flex flex-col justify-between animate-fadeIn">
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                        <span className="text-xs uppercase tracking-wider font-extrabold text-amber-200/90 font-mono">
-                          ✍️ BÀI TẬP LUYỆN TẬP CỦNG CỐ
-                        </span>
-                        
-                        <div className="flex gap-1">
-                          {['+10%', '+20%', '+30%'].map((tier) => (
-                            <button
-                              key={tier}
-                              onClick={() => {
-                                setSelectedExerciseTier(tier as any);
-                                setShowHint(false);
-                              }}
-                              className={`px-2 py-0.5 rounded text-[10px] font-bold border transition-all ${
-                                selectedExerciseTier === tier
-                                  ? 'bg-indigo-950 text-indigo-300 border-indigo-700'
-                                  : 'bg-transparent text-white/50 border-white/10 hover:text-white hover:border-white/25'
-                              }`}
-                            >
-                              {tier} {tier === '+10%' ? 'Cơ bản' : tier === '+20%' ? 'Khá' : 'Giỏi'}
-                            </button>
-                          ))}
+                            {/* Main Math Step Explanation - Bright Bold Text */}
+                            <p className="text-base md:text-lg font-bold text-zinc-50 leading-relaxed font-sans filter drop-shadow">
+                              {logicSteps[currentTurnIndex]?.content}
+                            </p>
+                          </div>
+
+                          {/* Chalk sketch box on the right of text */}
+                          <div className="shrink-0 self-center bg-black/30 border border-white/10 p-3 rounded-2xl shadow-inner">
+                            <ChalkSketch type={
+                              currentTurnIndex === 0 ? 'house' :
+                              currentTurnIndex === 1 ? 'calculator' :
+                              currentTurnIndex === 2 ? 'chart' : 'award'
+                            } />
+                          </div>
+                        </div>
+
+                        {/* visual graphic notes in typewriter effect - High contrast */}
+                        <div className="p-3 bg-black/30 border-l-4 border-cyan-300 rounded-r-lg space-y-1">
+                          <span className="text-[10px] uppercase font-bold text-cyan-300 font-mono block">Hình ảnh mô phỏng trên bảng:</span>
+                          <p className="text-sm text-cyan-100 font-extrabold font-mono leading-relaxed">
+                            {displayedGraphicNote}
+                            <span className="inline-block w-1.5 h-3.5 bg-cyan-300 ml-0.5 animate-pulse" />
+                          </p>
                         </div>
                       </div>
+                    )}
 
-                      {currentExercise ? (
+                    {activeTab === 'quiz' && (
+                      <div className="space-y-4 flex-1 flex flex-col justify-between animate-fadeIn">
                         <div className="space-y-3">
-                          <h4 className="text-xs font-bold text-amber-200/90 font-mono">
-                            {currentExercise.title} ({currentExercise.difficultyLabel})
-                          </h4>
-                          <p className="text-xs md:text-sm text-slate-100/95 leading-relaxed">
-                            {currentExercise.problemText}
+                          <div className="flex items-center justify-between border-b border-white/20 pb-2">
+                            <span className="text-xs md:text-sm uppercase tracking-wider font-extrabold text-yellow-300 font-mono">
+                              ❓ CÂU HỎI CHỐT CHẶN (POP-UP QUIZ)
+                            </span>
+                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${isStage3Unlocked ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'}`}>
+                              {isStage3Unlocked ? 'Đã Thông Qua' : 'Chưa Khóa'}
+                            </span>
+                          </div>
+                          
+                          <p className="text-base md:text-lg font-bold text-zinc-50 leading-relaxed filter drop-shadow">
+                            {data.popupQuiz.question}
                           </p>
 
-                          {showHint && (
-                            <div className="p-3 bg-teal-950/40 border border-teal-500/30 rounded-xl space-y-1">
-                              <span className="text-[9px] uppercase font-extrabold text-teal-400 font-mono block">💡 Gợi ý giải:</span>
-                              <p className="text-xs text-teal-100 font-mono leading-relaxed">
-                                {currentExercise.hint}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+                            {data.popupQuiz.options?.map((option, idx) => {
+                              const isSelected = selectedOption === idx;
+                              let btnStyle = 'border-white/20 bg-black/30 text-zinc-100 hover:border-amber-400 hover:bg-white/5';
+                              
+                              if (quizSubmitted) {
+                                if (idx === data.popupQuiz.correctAnswerIndex) {
+                                  btnStyle = 'bg-emerald-950/60 border-emerald-500 text-emerald-100 font-extrabold';
+                                } else if (isSelected) {
+                                  btnStyle = 'bg-rose-950/60 border-rose-500 text-rose-100 font-bold';
+                                }
+                              } else if (isSelected) {
+                                btnStyle = 'bg-indigo-950/70 border-indigo-400 text-indigo-100 font-extrabold ring-1 ring-indigo-400/50';
+                              }
+
+                              return (
+                                <button
+                                  key={idx}
+                                  type="button"
+                                  disabled={quizSubmitted && isCorrect}
+                                  onClick={() => {
+                                    setSelectedOption(idx);
+                                    setQuizSubmitted(false);
+                                  }}
+                                  className={`p-3 rounded-xl border text-left text-sm transition-all duration-150 flex items-center justify-between font-bold ${btnStyle}`}
+                                >
+                                  <span>{option}</span>
+                                  {quizSubmitted && idx === data.popupQuiz.correctAnswerIndex && (
+                                    <CheckCircle2 className="w-4.5 h-4.5 text-emerald-400 shrink-0 ml-2" />
+                                  )}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        <div className="pt-2">
+                          {!quizSubmitted ? (
+                            <button
+                              type="button"
+                              disabled={selectedOption === null}
+                              onClick={handleQuizSubmit}
+                              className="w-full py-2.5 bg-amber-600 hover:bg-amber-500 text-slate-950 font-extrabold text-xs md:text-sm rounded-xl shadow-lg transition-all disabled:opacity-50"
+                            >
+                              Xác Nhận Đáp Án
+                            </button>
+                          ) : (
+                            <div className={`p-3 rounded-xl border text-xs md:text-sm space-y-1.5 ${isCorrect ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-100' : 'bg-rose-950/60 border-rose-500/50 text-rose-100'}`}>
+                              <div className="font-extrabold flex items-center gap-1.5">
+                                {isCorrect ? (
+                                  <>
+                                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                                    <span>Chính xác! Giai đoạn 3 (Bảng nháp) đã mở khóa.</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <ShieldAlert className="w-4 h-4 text-rose-400" />
+                                    <span>Chưa đúng rồi. Bạn hãy suy nghĩ và chọn lại nhé!</span>
+                                  </>
+                                )}
+                              </div>
+                              <p className="text-xs opacity-90 leading-relaxed font-mono font-bold">
+                                {data.popupQuiz.explanation}
                               </p>
                             </div>
                           )}
                         </div>
-                      ) : (
-                        <p className="text-xs text-white/50 italic">Không có bài tập cho mức này.</p>
-                      )}
-                    </div>
+                      </div>
+                    )}
 
-                    <div className="pt-2">
-                      <button
-                        onClick={() => setShowHint(!showHint)}
-                        className="w-full py-2 bg-indigo-950 hover:bg-indigo-900 border border-indigo-700 text-indigo-300 font-bold text-xs rounded-xl transition-all"
-                      >
-                        {showHint ? 'Ẩn Gợi Ý Giải' : '💡 Xem Gợi Ý Giải'}
-                      </button>
+                    {activeTab === 'practice' && (
+                      <div className="space-y-4 flex-1 flex flex-col justify-between animate-fadeIn">
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between border-b border-white/20 pb-2">
+                            <span className="text-xs md:text-sm uppercase tracking-wider font-extrabold text-yellow-300 font-mono">
+                              ✍️ BÀI TẬP LUYỆN TẬP CỦNG CỐ
+                            </span>
+                            
+                            <div className="flex gap-1.5">
+                              {['+10%', '+20%', '+30%'].map((tier) => (
+                                <button
+                                  key={tier}
+                                  onClick={() => {
+                                    setSelectedExerciseTier(tier as any);
+                                    setShowHint(false);
+                                  }}
+                                  className={`px-2 py-0.5 rounded text-[10px] font-bold border transition-all ${
+                                    selectedExerciseTier === tier
+                                      ? 'bg-indigo-950 text-indigo-300 border-indigo-700'
+                                      : 'bg-transparent text-white/50 border-white/10 hover:text-white hover:border-white/25'
+                                  }`}
+                                >
+                                  {tier} {tier === '+10%' ? 'Cơ bản' : tier === '+20%' ? 'Khá' : 'Giỏi'}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          {currentExercise ? (
+                            <div className="space-y-3">
+                              <h4 className="text-xs md:text-sm font-extrabold text-yellow-300 font-mono">
+                                {currentExercise.title} ({currentExercise.difficultyLabel})
+                              </h4>
+                              <p className="text-base font-bold text-zinc-50 leading-relaxed filter drop-shadow">
+                                {currentExercise.problemText}
+                              </p>
+
+                              {showHint && (
+                                <div className="p-3 bg-teal-950/60 border border-teal-500/40 rounded-xl space-y-1">
+                                  <span className="text-[10px] uppercase font-extrabold text-teal-300 font-mono block">💡 Gợi ý giải:</span>
+                                  <p className="text-sm text-teal-200 font-mono font-extrabold leading-relaxed">
+                                    {currentExercise.hint}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <p className="text-xs text-white/50 italic">Không có bài tập cho mức này.</p>
+                          )}
+                        </div>
+
+                        <div className="pt-2">
+                          <button
+                            onClick={() => setShowHint(!showHint)}
+                            className="w-full py-2 bg-indigo-950 hover:bg-indigo-900 border border-indigo-700 text-indigo-300 font-extrabold text-xs md:text-sm rounded-xl transition-all"
+                          >
+                            {showHint ? 'Ẩn Gợi Ý Giải' : '💡 Xem Gợi Ý Giải'}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Vertical Dotted Divider line */}
+                  <div className="w-px border-r border-dashed border-white/15 self-stretch mx-1 hidden sm:block" />
+
+                  {/* Right Side: Simulated Robot Teacher Pedestal */}
+                  <div className="flex flex-col justify-center items-center w-[130px] shrink-0 border-l border-white/5 pl-2">
+                    <RobotTeacher 
+                      isSpeaking={isPlaying} 
+                      tab={activeTab} 
+                      currentStep={currentTurnIndex} 
+                    />
+                    
+                    {/* Tiny speech pointer bubble */}
+                    <div className="mt-2 text-[9px] font-mono text-cyan-200/90 bg-black/40 border border-white/10 px-2 py-1 rounded-lg text-center leading-normal max-w-[120px] font-bold">
+                      {isPlaying ? '✏️ Đang vẽ lên bảng...' : '⏸️ Đã tạm dừng'}
                     </div>
                   </div>
-                )}
+
+                </div>
 
                 {/* Bottom Avatar speaking profile */}
                 <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
@@ -603,7 +752,7 @@ export const Stage2View: React.FC<Props> = ({
                           </div>
                         )}
                       </div>
-                      <p className="text-[11px] text-zinc-300 truncate max-w-[280px] sm:max-w-[400px] italic">
+                      <p className="text-xs text-zinc-200 font-bold truncate max-w-[280px] sm:max-w-[400px] italic">
                         {activeTab === 'lecture' ? `"${currentTurn?.speakerText}"` : activeTab === 'quiz' ? '"Chọn đáp án đúng của câu hỏi chốt chặn nhé!"' : '"Giải các bài tập củng cố để ghi nhớ bài học tốt hơn."'}
                       </p>
                     </div>
@@ -721,13 +870,13 @@ export const Stage2View: React.FC<Props> = ({
               <MessageSquare className="w-4 h-4 text-cyan-600" />
               <span>Nội Dung Thuyết Minh Chi Tiết</span>
             </h4>
-            <div className="p-3 bg-white/70 border border-slate-200/50 rounded-xl max-h-[120px] overflow-y-auto text-xs text-slate-600 leading-relaxed space-y-2">
+            <div className="p-3 bg-white/70 border border-slate-200/50 rounded-xl max-h-[120px] overflow-y-auto text-xs text-slate-600 leading-relaxed space-y-2 font-bold font-sans">
               {script.map((turn, i) => (
                 <div 
                   key={i} 
                   className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
                     i === currentTurnIndex && activeTab === 'lecture'
-                      ? 'bg-cyan-50 text-cyan-950 font-medium'
+                      ? 'bg-cyan-50 text-cyan-950'
                       : 'hover:bg-slate-50'
                   }`}
                   onClick={() => {
@@ -736,7 +885,7 @@ export const Stage2View: React.FC<Props> = ({
                     setIsPlaying(true);
                   }}
                 >
-                  <span className="font-bold text-cyan-700 mr-1.5">Phần {i + 1} ({turn.timeSeconds}s):</span>
+                  <span className="font-extrabold text-cyan-700 mr-1.5">Phần {i + 1} ({turn.timeSeconds}s):</span>
                   "{turn.speakerText}"
                 </div>
               ))}
@@ -747,4 +896,3 @@ export const Stage2View: React.FC<Props> = ({
     </div>
   );
 };
-
