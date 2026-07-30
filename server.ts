@@ -253,7 +253,7 @@ Nhiệm vụ của bạn:
    - "red" (Lỗi sai logic nền tảng, sai bản chất)
 3. Phân tích nguyên nhân gốc rễ (Root Cause Analysis).
 4. Đưa ra nhận xét sư phạm tích cực, truyền cảm hứng (Mentor Feedback).
-5. Lộ trình khắc phục (Remedial Roadmap) gồm 1 khái niệm cần ôn lại và 01 bài kiểm tra Quick Fix để kiểm tra xem học sinh đã khắc phục lỗi chưa.
+5. Lộ trình khắc phục (Remedial Roadmap) gồm 1 khái niệm cần ôn lại và danh sách 5 bài tập Quick Fix tương tự để học sinh luyện tập xác nhận sửa lỗi.
 `;
 
     contents.push({ text: telemetryPrompt });
@@ -308,18 +308,21 @@ Nhiệm vụ của bạn:
               properties: {
                 recapConceptName: { type: Type.STRING },
                 recapSummary: { type: Type.STRING },
-                quickFixQuestion: {
-                  type: Type.OBJECT,
-                  properties: {
-                    question: { type: Type.STRING },
-                    options: { type: Type.ARRAY, items: { type: Type.STRING } },
-                    correctAnswerIndex: { type: Type.INTEGER },
-                    explanation: { type: Type.STRING },
+                quickFixQuestions: {
+                  type: Type.ARRAY,
+                  items: {
+                    type: Type.OBJECT,
+                    properties: {
+                      question: { type: Type.STRING },
+                      options: { type: Type.ARRAY, items: { type: Type.STRING } },
+                      correctAnswerIndex: { type: Type.INTEGER },
+                      explanation: { type: Type.STRING },
+                    },
+                    required: ['question', 'options', 'correctAnswerIndex', 'explanation'],
                   },
-                  required: ['question', 'options', 'correctAnswerIndex', 'explanation'],
                 },
               },
-              required: ['recapConceptName', 'recapSummary', 'quickFixQuestion'],
+              required: ['recapConceptName', 'recapSummary', 'quickFixQuestions'],
             },
           },
           required: ['processScore', 'scoreBreakdown', 'errorHeatmap', 'rootCauseAnalysis', 'mentorFeedback', 'remedialRoadmap'],
