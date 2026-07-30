@@ -38,7 +38,12 @@ export default function App() {
   useEffect(() => {
     const checkApiKey = () => {
       const savedKey = localStorage.getItem('gemini_api_key') || '';
-      setIsForcedApiKey(false);
+      if (!savedKey) {
+        setIsForcedApiKey(true);
+        setIsApiKeyModalOpen(true);
+      } else {
+        setIsForcedApiKey(false);
+      }
     };
     checkApiKey();
     window.addEventListener('gemini_settings_changed', checkApiKey);
