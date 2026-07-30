@@ -9,12 +9,12 @@ interface Props {
 
 export const ApiKeyModal: React.FC<Props> = ({ isOpen, onClose, isForced = false }) => {
   const [apiKey, setApiKey] = useState<string>('');
-  const [selectedModel, setSelectedModel] = useState<string>('gemini-3-flash-preview');
+  const [selectedModel, setSelectedModel] = useState<string>('gemini-2.5-flash');
 
   useEffect(() => {
     if (isOpen) {
       const savedKey = localStorage.getItem('gemini_api_key') || '';
-      const savedModel = localStorage.getItem('gemini_model') || 'gemini-3-flash-preview';
+      const savedModel = localStorage.getItem('gemini_model') || 'gemini-2.5-flash';
       setApiKey(savedKey);
       setSelectedModel(savedModel);
     }
@@ -32,22 +32,22 @@ export const ApiKeyModal: React.FC<Props> = ({ isOpen, onClose, isForced = false
 
   const models = [
     {
-      id: 'gemini-3-flash-preview',
-      name: 'Gemini 3 Flash Preview',
-      badge: 'Default / Nhanh & Tối ưu',
-      description: 'Phù hợp nhất cho OCR nhanh và phân tích đề toán cơ bản, phản hồi nhanh chóng.',
-    },
-    {
-      id: 'gemini-3-pro-preview',
-      name: 'Gemini 3 Pro Preview',
-      badge: 'Chuyên sâu & Thông minh',
-      description: 'Khuyên dùng cho các bài toán phức tạp, hình học, vẽ bảng nháp và chẩn đoán sâu sắc.',
-    },
-    {
       id: 'gemini-2.5-flash',
       name: 'Gemini 2.5 Flash',
-      badge: 'Hiệu năng cao',
-      description: 'Model hiệu năng cao cho xử lý tác vụ thông thường ổn định.',
+      badge: 'Mặc định / Nhanh & Tối ưu',
+      description: 'Model khuyên dùng, phù hợp nhất cho OCR nhanh, lập luận toán học tốt và phản hồi cực nhanh.',
+    },
+    {
+      id: 'gemini-2.5-pro',
+      name: 'Gemini 2.5 Pro',
+      badge: 'Chuyên sâu & Thông minh',
+      description: 'Phù hợp nhất cho các bài toán hình học phức tạp và phân tích chẩn đoán lỗi sai sâu sắc.',
+    },
+    {
+      id: 'gemini-2.0-flash',
+      name: 'Gemini 2.0 Flash',
+      badge: 'Tốc độ cực nhanh',
+      description: 'Phản hồi siêu tốc, thích hợp cho việc chấm điểm bảng vẽ nháp nhanh chóng.',
     },
   ];
 
