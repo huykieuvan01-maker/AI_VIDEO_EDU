@@ -1,0 +1,6 @@
+{
+  "name": "AIEdu_Video",
+  "description": "Hệ sinh thái Giáo dục Thích ứng 4 Giai đoạn: OCR & Kịch bản Sư phạm, Video Tương tác, Bảng nháp Thông minh & Chẩn đoán Lỗi sai",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
