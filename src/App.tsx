@@ -121,7 +121,8 @@ export default function App() {
       setIsStage4Unlocked(false);
       
       const isMissingKey = err?.message?.includes('API Key') || err?.message?.includes('API_KEY') || err?.message?.includes('key');
-      if (isMissingKey) {
+      const isQuotaExceeded = friendlyMessage.includes('Rate Limit') || friendlyMessage.includes('Quota Exceeded') || friendlyMessage.includes('429');
+      if (isMissingKey || isQuotaExceeded) {
         setIsForcedApiKey(false);
         setIsApiKeyModalOpen(true);
       }
@@ -189,7 +190,8 @@ export default function App() {
       }
       
       const isMissingKey = err?.message?.includes('API Key') || err?.message?.includes('API_KEY') || err?.message?.includes('key');
-      if (isMissingKey && !diagnosticReport) {
+      const isQuotaExceeded = friendlyMessage.includes('Rate Limit') || friendlyMessage.includes('Quota Exceeded') || friendlyMessage.includes('429');
+      if ((isMissingKey || isQuotaExceeded) && !diagnosticReport) {
         setIsForcedApiKey(false);
         setIsApiKeyModalOpen(true);
       }
