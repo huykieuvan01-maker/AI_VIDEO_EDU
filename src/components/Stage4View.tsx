@@ -243,18 +243,18 @@ export const Stage4View: React.FC<Props> = ({ report, data, telemetry = null, on
             </h3>
           </div>
 
-          <div className="p-3.5 bg-slate-950 border border-slate-800 rounded-xl space-y-2 text-xs">
+          <div className="p-3.5 bg-slate-950 border border-slate-800 rounded-xl space-y-2.5 text-xs">
             <div>
-              <span className="text-slate-450 font-medium">Lỗ hổng cốt lõi:</span>
-              <p className="font-bold text-amber-800">{report.rootCauseAnalysis?.coreGap}</p>
+              <span className="text-zinc-650 font-bold block mb-0.5">Lỗ hổng cốt lõi:</span>
+              <p className="font-extrabold text-amber-900 text-sm">{report.rootCauseAnalysis?.coreGap}</p>
             </div>
             <div>
-              <span className="text-slate-455 font-medium">Dạng nhầm lẫn:</span>
-              <p className="font-semibold text-slate-900">{report.rootCauseAnalysis?.misconceptionType}</p>
+              <span className="text-zinc-650 font-bold block mb-0.5">Dạng nhầm lẫn:</span>
+              <p className="font-extrabold text-zinc-900 text-sm">{report.rootCauseAnalysis?.misconceptionType}</p>
             </div>
             <div>
-              <span className="text-slate-460 font-medium">Giải thích chi tiết:</span>
-              <p className="text-slate-700 leading-relaxed mt-0.5">{report.rootCauseAnalysis?.detailedExplanation}</p>
+              <span className="text-zinc-650 font-bold block mb-0.5">Giải thích chi tiết:</span>
+              <p className="text-zinc-800 font-bold leading-relaxed text-xs md:text-sm">{report.rootCauseAnalysis?.detailedExplanation}</p>
             </div>
           </div>
         </div>
