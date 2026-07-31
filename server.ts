@@ -82,11 +82,10 @@ Ngôn ngữ: Tiếng Việt sư phạm tích cực. Thay vì "Em đã sai", hãy
 // API 1: Analyze problem & build Stage 1, Stage 2, Stage 3 data
 app.post('/api/analyze-problem', async (req, res) => {
   try {
-    const userKey = req.headers['x-gemini-key'] as string;
-    const preferredModel = (req.headers['x-gemini-model'] as string) || 'gemini-3-pro-preview';
+    const { problemText, imageBase64, gradeLevel, tone, subject, apiKey, preferredModel: bodyModel } = req.body;
+    const userKey = apiKey || (req.headers['x-gemini-key'] as string);
+    const preferredModel = bodyModel || (req.headers['x-gemini-model'] as string) || 'gemini-2.5-flash';
     const aiClient = getAIClient(userKey);
-
-    const { problemText, imageBase64, gradeLevel, tone, subject } = req.body;
 
     if (!problemText && !imageBase64) {
       return res.status(400).json({ error: 'Vui lòng cung cấp văn bản bài toán hoặc hình ảnh OCR.' });
@@ -216,11 +215,10 @@ Giai đoạn 3: Kho bài tập dàn giáo (Scaffolding 3 bài tập với độ 
 // API 2: Evaluate Student Scratchpad & Generate Stage 4 Diagnostic Report
 app.post('/api/evaluate-scratchpad', async (req, res) => {
   try {
-    const userKey = req.headers['x-gemini-key'] as string;
-    const preferredModel = (req.headers['x-gemini-model'] as string) || 'gemini-3-pro-preview';
+    const { problemText, scratchpadImageBase64, typedSolution, telemetry, apiKey, preferredModel: bodyModel } = req.body;
+    const userKey = apiKey || (req.headers['x-gemini-key'] as string);
+    const preferredModel = bodyModel || (req.headers['x-gemini-model'] as string) || 'gemini-2.5-flash';
     const aiClient = getAIClient(userKey);
-
-    const { problemText, scratchpadImageBase64, typedSolution, telemetry } = req.body;
 
     const contents: any[] = [];
 
