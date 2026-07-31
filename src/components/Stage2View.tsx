@@ -372,7 +372,8 @@ export const Stage2View: React.FC<Props> = ({
               {script.map((turn, idx) => {
                 const isActive = activeTab === 'lecture' && currentTurnIndex === idx;
                 const isCompleted = idx < currentTurnIndex;
-                const step = logicSteps[idx];
+                const isIntro = idx === 0;
+                const stepTitle = isIntro ? "Giới thiệu đề bài" : (logicSteps[idx - 1]?.title || `Phần giảng ${idx}`);
                 
                 return (
                   <button
@@ -399,7 +400,7 @@ export const Stage2View: React.FC<Props> = ({
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="font-bold truncate">
-                        {step?.title || `Phần giảng ${idx + 1}`}
+                        {stepTitle}
                       </div>
                       <div className="text-[10px] opacity-80 mt-0.5 truncate">
                         {turn.visualCue || 'Mô tả hình ảnh'}
@@ -539,56 +540,68 @@ export const Stage2View: React.FC<Props> = ({
                   
                   {/* Left Side: Math Content & Exercises */}
                   <div className="flex-1 flex flex-col justify-between space-y-4">
-                    {activeTab === 'lecture' && (
-                      <div className="space-y-4 flex-1">
-                        <div className="flex items-center justify-between border-b border-white/20 pb-2">
-                          <span className="text-xs md:text-sm uppercase tracking-wider font-extrabold text-yellow-300 font-mono">
-                            ✏️ {logicSteps[currentTurnIndex]?.title || 'Phân tích & Thuyết minh'}
-                          </span>
-                          <span className="text-[10px] text-zinc-300 font-mono">
-                            Mốc: {currentTurn?.timeSeconds || 0}s
-                          </span>
-                        </div>
+                    {activeTab === 'lecture' && (() => {
+                      const isIntro = currentTurnIndex === 0;
+                      const activeStepIndex = isIntro ? 0 : currentTurnIndex - 1;
+                      const activeStep = logicSteps[activeStepIndex];
+                      
+                      const stepTitle = isIntro ? "Giới thiệu & Tóm tắt đề bài" : (activeStep?.title || `Bước ${activeStepIndex + 1}`);
+                      const stepFormula = isIntro ? (data.ocrData ? "Tóm tắt giả thiết cốt lõi" : "") : activeStep?.keyFormula;
+                      const stepContent = isIntro ? (data.ocrData || "Đọc kỹ đề bài toán để bắt đầu phân tích logic.") : (activeStep?.content || "");
 
-                        {/* Split layout: text left, chalk sketch right */}
-                        <div className="flex flex-col md:flex-row gap-4 items-start justify-between">
-                          <div className="flex-1 space-y-3">
-                            {/* Key formula display in chalk outline */}
-                            {logicSteps[currentTurnIndex]?.keyFormula && (
-                              <div className="p-4 bg-black/40 border border-dashed border-white/30 rounded-xl text-center space-y-1 animate-fadeIn">
-                                <span className="text-[10px] uppercase font-bold text-cyan-300 font-mono block">Công thức cốt lõi:</span>
-                                <span className="text-2xl md:text-3xl font-extrabold text-yellow-200 font-mono tracking-wide block filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                                  {logicSteps[currentTurnIndex].keyFormula}
-                                </span>
-                              </div>
-                            )}
+                      return (
+                        <div className="space-y-4 flex-1">
+                          <div className="flex items-center justify-between border-b border-white/20 pb-2">
+                            <span className="text-xs md:text-sm uppercase tracking-wider font-extrabold text-yellow-300 font-mono">
+                              ✏️ {stepTitle}
+                            </span>
+                            <span className="text-[10px] text-zinc-300 font-mono">
+                              Mốc: {currentTurn?.timeSeconds || 0}s
+                            </span>
+                          </div>
 
-                            {/* Main Math Step Explanation - Bright Bold Text */}
-                            <p className="text-base md:text-lg font-bold text-zinc-50 leading-relaxed font-sans filter drop-shadow">
-                              {logicSteps[currentTurnIndex]?.content}
+                          {/* Split layout: text left, chalk sketch right */}
+                          <div className="flex flex-col md:flex-row gap-4 items-start justify-between">
+                            <div className="flex-1 space-y-3">
+                              {/* Key formula display in chalk outline */}
+                              {stepFormula && (
+                                <div className="p-4 bg-black/40 border border-dashed border-white/30 rounded-xl text-center space-y-1 animate-fadeIn">
+                                  <span className="text-[10px] uppercase font-bold text-cyan-300 font-mono block">
+                                    {isIntro ? "Giả thiết đề bài:" : "Công thức cốt lõi:"}
+                                  </span>
+                                  <span className="text-2xl md:text-3xl font-extrabold text-yellow-200 font-mono tracking-wide block filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                                    {stepFormula}
+                                  </span>
+                                </div>
+                              )}
+
+                              {/* Main Math Step Explanation - Bright Bold Text */}
+                              <p className="text-base md:text-lg font-bold text-zinc-50 leading-relaxed font-sans filter drop-shadow">
+                                {stepContent}
+                              </p>
+                            </div>
+
+                            {/* Chalk sketch box on the right of text */}
+                            <div className="shrink-0 self-center bg-black/30 border border-white/10 p-3 rounded-2xl shadow-inner">
+                              <ChalkSketch type={
+                                currentTurnIndex === 0 ? 'house' :
+                                currentTurnIndex === 1 ? 'calculator' :
+                                currentTurnIndex === 2 ? 'chart' : 'award'
+                              } />
+                            </div>
+                          </div>
+
+                          {/* visual graphic notes in typewriter effect - High contrast */}
+                          <div className="p-3 bg-black/30 border-l-4 border-cyan-300 rounded-r-lg space-y-1">
+                            <span className="text-[10px] uppercase font-bold text-cyan-300 font-mono block">Hình ảnh mô phỏng trên bảng:</span>
+                            <p className="text-sm text-cyan-100 font-extrabold font-mono leading-relaxed">
+                              {displayedGraphicNote}
+                              <span className="inline-block w-1.5 h-3.5 bg-cyan-300 ml-0.5 animate-pulse" />
                             </p>
                           </div>
-
-                          {/* Chalk sketch box on the right of text */}
-                          <div className="shrink-0 self-center bg-black/30 border border-white/10 p-3 rounded-2xl shadow-inner">
-                            <ChalkSketch type={
-                              currentTurnIndex === 0 ? 'house' :
-                              currentTurnIndex === 1 ? 'calculator' :
-                              currentTurnIndex === 2 ? 'chart' : 'award'
-                            } />
-                          </div>
                         </div>
-
-                        {/* visual graphic notes in typewriter effect - High contrast */}
-                        <div className="p-3 bg-black/30 border-l-4 border-cyan-300 rounded-r-lg space-y-1">
-                          <span className="text-[10px] uppercase font-bold text-cyan-300 font-mono block">Hình ảnh mô phỏng trên bảng:</span>
-                          <p className="text-sm text-cyan-100 font-extrabold font-mono leading-relaxed">
-                            {displayedGraphicNote}
-                            <span className="inline-block w-1.5 h-3.5 bg-cyan-300 ml-0.5 animate-pulse" />
-                          </p>
-                        </div>
-                      </div>
-                    )}
+                      );
+                    })()}
 
                     {activeTab === 'quiz' && (
                       <div className="space-y-4 flex-1 flex flex-col justify-between animate-fadeIn">
