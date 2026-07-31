@@ -119,6 +119,11 @@ Hãy xuất ra kết quả cấu trúc JSON tuân thủ đầy đủ 3 Giai đo�
 Giai đoạn 1: OCR Data, Micro-logic steps (Bước 1, 2, 3), Pedagogical Prompt (Chỉ dẫn cho AI Video: Tông giọng, Tốc độ, Key visual, Điểm nhấn [Slow / Emphasis]).
 Giai đoạn 2: Video Script (Nội dung Avatar nói từng mốc thời gian) và Pop-up Quiz (Câu hỏi kiểm tra chốt chặn giữa bài với giải thích).
 Giai đoạn 3: Kho bài tập dàn giáo (Scaffolding 3 bài tập với độ khó tăng dần +10%, +20%, +30%).
+
+QUY TẮC ĐỒNG BỘ VIDEO VÀ CÁC BƯỚC GIẢI TOÁN BẮT BUỘC:
+1. Số phần tử (Scene) trong mảng videoScript BẮT BUỘC phải bằng: Số lượng bước giải trong logicSteps + 1.
+2. Phần tử đầu tiên (videoScript[0]) phải là phân cảnh GIỚI THIỆU ĐỀ BÀI (speakerText tóm tắt/đọc đề, motionGraphicNote mô tả tóm tắt đề bài).
+3. Các phần tử tiếp theo (videoScript[i], với i chạy từ 1 đến N) phải tương ứng và đồng bộ hoàn toàn với bước giải logicSteps[i-1]. Lời thoại speakerText của giáo viên và hình ảnh mô phỏng trên bảng motionGraphicNote phải giảng giải chính xác nội dung toán học của bước logicSteps[i-1] tương ứng đó. Tuyệt đối không được râu ông nọ cắm cằm bà kia (ví dụ bảng vẽ nội dung bài toán giảm giá mà lời thoại lại đọc bài toán ca nô).
 `;
 
     contents.push({ text: promptText });
