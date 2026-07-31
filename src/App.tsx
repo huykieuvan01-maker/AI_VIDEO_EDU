@@ -82,7 +82,11 @@ export default function App() {
           'x-gemini-key': savedKey,
           'x-gemini-model': savedModel
         },
-        body: JSON.stringify(input),
+        body: JSON.stringify({
+          ...input,
+          apiKey: savedKey,
+          preferredModel: savedModel
+        }),
       });
 
       const resData = await response.json();
@@ -158,6 +162,8 @@ export default function App() {
           scratchpadImageBase64,
           typedSolution,
           telemetry,
+          apiKey: savedKey,
+          preferredModel: savedModel
         }),
       });
 
