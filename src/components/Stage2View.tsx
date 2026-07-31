@@ -164,41 +164,74 @@ export const Stage2View: React.FC<Props> = ({
     }
   }, []);
 
-  const speakTurnText = (text: string) => {
-    if (isMuted || !synthRef.current) return;
+  const speakTurnText = (text: string, onEndCallback: () => void) => {
+    if (isMuted || !synthRef.current) {
+      onEndCallback();
+      return;
+    }
     synthRef.current.cancel();
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'vi-VN';
     utterance.rate = 0.9 * playbackSpeed;
 
+    utterance.onend = () => {
+      onEndCallback();
+    };
+
+    utterance.onerror = (e) => {
+      console.warn("SpeechSynthesis error or interrupted:", e);
+      if (e.error !== 'interrupted') {
+        onEndCallback();
+      }
+    };
+
     synthRef.current.speak(utterance);
   };
 
   // Playback loop
   useEffect(() => {
-    let timer: any = null;
-    if (isPlaying && activeTab === 'lecture') {
-      if (currentTurn) {
-        speakTurnText(currentTurn.speakerText);
+    let fallbackTimer: any = null;
+    let isTransitioned = false;
+
+    const transitionToNext = () => {
+      if (isTransitioned) return;
+      isTransitioned = true;
+      
+      if (currentTurnIndex < script.length - 1) {
+        setCurrentTurnIndex((prev) => prev + 1);
+      } else {
+        setIsPlaying(false);
+        setActiveTab('quiz');
       }
+    };
 
+    if (isPlaying && activeTab === 'lecture') {
       const wordCount = currentTurn?.speakerText ? currentTurn.speakerText.split(' ').length : 15;
-      const calculatedDuration = Math.max(5000, (wordCount * 330) / playbackSpeed);
+      const calculatedDuration = Math.max(5000, (wordCount * 380) / playbackSpeed);
 
-      timer = setTimeout(() => {
-        if (currentTurnIndex < script.length - 1) {
-          setCurrentTurnIndex((prev) => prev + 1);
-        } else {
-          setIsPlaying(false);
-          setActiveTab('quiz');
-        }
-      }, calculatedDuration);
+      if (!isMuted && synthRef.current) {
+        speakTurnText(currentTurn.speakerText, () => {
+          transitionToNext();
+        });
+
+        // Safety fallback timer in case utterance.onend fails to fire in some browsers
+        fallbackTimer = setTimeout(() => {
+          transitionToNext();
+        }, calculatedDuration + 4000);
+      } else {
+        // Muted or no SpeechSynthesis support: transition strictly by time
+        fallbackTimer = setTimeout(() => {
+          transitionToNext();
+        }, calculatedDuration);
+      }
     } else {
       if (synthRef.current) synthRef.current.cancel();
     }
 
-    return () => clearTimeout(timer);
+    return () => {
+      if (fallbackTimer) clearTimeout(fallbackTimer);
+    };
   }, [isPlaying, currentTurnIndex, isMuted, activeTab, playbackSpeed]);
 
   // Typewriter effect trigger
